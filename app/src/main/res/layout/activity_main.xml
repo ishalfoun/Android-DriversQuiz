@@ -15,18 +15,18 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/questiontitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="TextView" />
+            android:text="@string/questiontitle" />
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/question"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="TextView" />
+            android:text="" />
     </LinearLayout>
 
     <GridLayout
@@ -35,28 +35,52 @@
         android:columnCount="2"
         android:rowCount="2">
 
-        <ImageView
-            android:id="@+id/imageView4"
+        <ImageButton
+            android:id="@+id/btnTopLeft"
+            android:layout_height="100dp"
+            android:layout_width="100dp"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1"
             android:layout_column="0"
             android:layout_row="0"
+            android:onClick=""
+            android:scaleType="centerInside"
             app:srcCompat="@drawable/image3" />
 
-        <ImageView
-            android:id="@+id/imageView5"
+        <ImageButton
+            android:id="@+id/btnTopRight"
+            android:layout_height="100dp"
+            android:layout_width="100dp"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1"
             android:layout_column="0"
             android:layout_row="1"
+            android:onClick=""
+            android:scaleType="centerInside"
             app:srcCompat="@drawable/image4" />
 
-        <ImageView
-            android:id="@+id/imageView3"
+        <ImageButton
+            android:id="@+id/btnBotLeft"
+            android:layout_height="100dp"
+            android:layout_width="100dp"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1"
             android:layout_column="1"
             android:layout_row="0"
+            android:onClick=""
+            android:scaleType="centerInside"
             app:srcCompat="@drawable/image2" />
 
-        <ImageView
-            android:id="@+id/imageView2"
+        <ImageButton
+            android:id="@+id/btnBotRight"
+            android:layout_height="100dp"
+            android:layout_width="100dp"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1"
             android:layout_column="1"
             android:layout_row="1"
+            android:onClick=""
+            android:scaleType="centerInside"
             app:srcCompat="@drawable/image1" />
 
     </GridLayout>
@@ -74,10 +98,11 @@
         android:text="TextView" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/btnNext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Button" />
+        android:visibility="invisible"
+        android:text="Next" />
 
     <LinearLayout
         android:layout_width="match_parent"
