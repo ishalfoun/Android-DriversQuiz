@@ -86,13 +86,13 @@
     </GridLayout>
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/ScoreText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="TextView" />
 
     <TextView
-        android:id="@+id/textView6"
+        android:id="@+id/questionCountText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="TextView" />
@@ -101,8 +101,9 @@
         android:id="@+id/btnNext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="invisible"
-        android:text="Next" />
+        android:onClick="nextQuestion"
+        android:text="Next"
+        android:visibility="invisible" />
 
     <LinearLayout
         android:layout_width="match_parent"
