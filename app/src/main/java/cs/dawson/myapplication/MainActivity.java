@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
             imgs.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic15, R.string.question15) ) );
 
         nextQuestion(null);
+        Drawable d = getResources().getDrawable( R.drawable.pic01 );
     }
 
     public void nextQuestion(View v)
@@ -71,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         setAllBtnListenerIncorrect();
         setRandomImages( imgs );
 
+        firstIncorrect=false;
         btnNext.setVisibility(View.INVISIBLE);
     }
 
@@ -100,10 +102,15 @@ public class MainActivity extends AppCompatActivity {
         int correctAnswer = new Random().nextInt(4); // get random number 0-4
 
         //set the 4 buttons to the first 4 images in the shuffled choices-array
-        btns.get(0).setImageResource((int)choice.get(0).get(0));
-        btns.get(1).setImageResource((int)choice.get(1).get(0));
-        btns.get(2).setImageResource((int)choice.get(2).get(0));
-        btns.get(3).setImageResource((int)choice.get(3).get(0));
+        btns.get(0).setBackground(getResources().getDrawable((int)choice.get(0).get(0), null));
+        btns.get(1).setBackground(getResources().getDrawable((int)choice.get(1).get(0), null));
+        btns.get(2).setBackground(getResources().getDrawable((int)choice.get(2).get(0), null));
+        btns.get(3).setBackground(getResources().getDrawable((int)choice.get(3).get(0), null));
+
+        btns.get(0).setImageResource(0);
+        btns.get(1).setImageResource(0);
+        btns.get(2).setImageResource(0);
+        btns.get(3).setImageResource(0);
 
         //choose a correct answer, then get that image's string and set it as the question
         question.setText((int)choice.get(correctAnswer).get(1));
@@ -122,7 +129,8 @@ public class MainActivity extends AppCompatActivity {
         correctCounter++;
         questionCounter++;
         setAllBtnListenerOff();
-        //TODO: change the image in some way to show it is the correct answer (you may want to try <selector> and/or an alternate image that shows the same with a border) see: http://developer.android.com/guide/topics/ui/controls/button.html
+
+        ((ImageButton) v).setImageResource(R.drawable.correct);//set img src to incorrect
 
         btnNext.setVisibility(View.VISIBLE);
         updateCounters();
@@ -136,13 +144,9 @@ public class MainActivity extends AppCompatActivity {
 
         if (firstIncorrect) // second incorrect
         {
-            //upate score
-            //TODO: change the image in some way to show it is the correct answer (you may want to try <selector> and/or an alternate image that shows the same with a border) see: http://developer.android.com/guide/topics/ui/controls/button.html
-
             setAllBtnListenerOff();
             btnNext.setVisibility(View.VISIBLE);
             questionCounter++;
-            firstIncorrect=false;
         }
         else // first incorrect
         {
