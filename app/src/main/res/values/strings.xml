@@ -1,3 +1,19 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">Drivers Quiz</string>
+    <string name="questiontitle">Which Image matches:</string>
+    <string name="question01">Railway crossing ahead</string>
+    <string name="question02">Right lane ends ahead</string>
+    <string name="question03">No turns allowed</string>
+    <string name="question04">Road slippery when wet</string>
+    <string name="question05">You must yield the right-of-way</string>
+    <string name="question06">Bump ahead</string>
+    <string name="question07">school crosswalk ahead</string>
+    <string name="question08">Winding road ahead</string>
+    <string name="question09">Traffic signals ahead</string>
+    <string name="question10">Slow-moving vehicle</string>
+    <string name="question11">Narrow bridge ahead</string>
+    <string name="question12">Divided highway begins ahead</string>
+    <string name="question13">Do not stop to wait</string>
+    <string name="question14">Two-way traffic</string>
+    <string name="question15">This lane of traffic must turn right</string>
 </resources>
