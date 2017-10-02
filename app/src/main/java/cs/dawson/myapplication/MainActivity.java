@@ -42,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
             btns.add((ImageButton) findViewById(R.id.btnBotLeft));
             btns.add((ImageButton) findViewById(R.id.btnBotRight));
 
+        //comment
+
         //question
         question = (TextView)findViewById(R.id.question);
 
