@@ -1,5 +1,6 @@
 package cs.dawson.myapplication;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -19,9 +20,10 @@ public class MainActivity extends AppCompatActivity {
 
     ArrayList<ArrayList<Object>> imgs;
     ArrayList<ImageButton> btns;
-    TextView question;
+    TextView question, scoreText, questionCounterText ;
     int incorrectCounter =0, correctCounter=0, questionCounter=0;
     Button btnNext;
+    boolean firstIncorrect=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         btnNext = (Button) findViewById(R.id.btnNext);
+
+        scoreText = (TextView) findViewById(R.id.ScoreText);
+        questionCounterText = (TextView) findViewById(R.id.questionCountText);
 
         //buttons
         btns = new ArrayList<>();
@@ -58,9 +63,17 @@ public class MainActivity extends AppCompatActivity {
             imgs.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic14, R.string.question14) ) );
             imgs.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic15, R.string.question15) ) );
 
+        nextQuestion(null);
+        Drawable d = getResources().getDrawable( R.drawable.pic01 );
+    }
+
+    public void nextQuestion(View v)
+    {
         setAllBtnListenerIncorrect();
         setRandomImages( imgs );
 
+        firstIncorrect=false;
+        btnNext.setVisibility(View.INVISIBLE);
     }
 
     public void setAllBtnListenerIncorrect()
@@ -86,13 +99,18 @@ public class MainActivity extends AppCompatActivity {
     public void setRandomImages(ArrayList<ArrayList<Object>> choice)
     {
         Collections.shuffle(choice); // shuffle the choice images
-        int correctAnswer = new Random().nextInt(5); // get random number 0-4
+        int correctAnswer = new Random().nextInt(4); // get random number 0-4
 
         //set the 4 buttons to the first 4 images in the shuffled choices-array
-        btns.get(0).setImageResource((int)choice.get(0).get(0));
-        btns.get(1).setImageResource((int)choice.get(1).get(0));
-        btns.get(2).setImageResource((int)choice.get(2).get(0));
-        btns.get(3).setImageResource((int)choice.get(3).get(0));
+        btns.get(0).setBackground(getResources().getDrawable((int)choice.get(0).get(0), null));
+        btns.get(1).setBackground(getResources().getDrawable((int)choice.get(1).get(0), null));
+        btns.get(2).setBackground(getResources().getDrawable((int)choice.get(2).get(0), null));
+        btns.get(3).setBackground(getResources().getDrawable((int)choice.get(3).get(0), null));
+
+        btns.get(0).setImageResource(0);
+        btns.get(1).setImageResource(0);
+        btns.get(2).setImageResource(0);
+        btns.get(3).setImageResource(0);
 
         //choose a correct answer, then get that image's string and set it as the question
         question.setText((int)choice.get(correctAnswer).get(1));
@@ -111,19 +129,44 @@ public class MainActivity extends AppCompatActivity {
         correctCounter++;
         questionCounter++;
         setAllBtnListenerOff();
-        //TODO: change the image in some way to show it is the correct answer (you may want to try <selector> and/or an alternate image that shows the same with a border) see: http://developer.android.com/guide/topics/ui/controls/button.html
 
-        // TODO:      enable and make visible the next button
-        //btnNext.setVisibility(View.VISIBLE);
+        ((ImageButton) v).setImageResource(R.drawable.correct);//set img src to incorrect
+
+        btnNext.setVisibility(View.VISIBLE);
+        updateCounters();
 
     }
 
     public void incorrect(View v)
     {
-        question.setText("NOOOO!!");
-        ((ImageButton) v).setImageResource(R.drawable.incorrect);
+        ((ImageButton) v).setImageResource(R.drawable.incorrect);//set img src to incorrect
         incorrectCounter++;
 
-        //btnNext.setVisibility(View.VISIBLE);
+        if (firstIncorrect) // second incorrect
+        {
+            setAllBtnListenerOff();
+            btnNext.setVisibility(View.VISIBLE);
+            questionCounter++;
+        }
+        else // first incorrect
+        {
+            ((ImageButton) v).setOnClickListener(new View.OnClickListener() { //set img to not clickable.
+                public void onClick(View v) {
+                }
+            });
+            firstIncorrect = true;
+        }
+        updateCounters();
     }
+
+    public void updateCounters()
+    {
+        scoreText.setText("Your score is: "+ correctCounter + " Correct/ "+incorrectCounter + " Incorrect");
+        questionCounterText.setText("You have completed " + questionCounter + " out of 10 questions");
+        if (questionCounter == 10)
+        {
+            startActivity(new Intent(this, ResultActivity.class));
+        }
+    }
+
 }
