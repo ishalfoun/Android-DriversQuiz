@@ -85,13 +85,13 @@
         android:id="@+id/ScoreText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:text="@string/scoreText1" />
 
     <TextView
         android:id="@+id/questionCountText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:text="@string/counterText1" />
 
     <Button
         android:id="@+id/btnNext"

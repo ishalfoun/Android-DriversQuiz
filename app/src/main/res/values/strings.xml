@@ -7,7 +7,7 @@
     <string name="question04">Road slippery when wet</string>
     <string name="question05">You must yield the right-of-way</string>
     <string name="question06">Bump ahead</string>
-    <string name="question07">school crosswalk ahead</string>
+    <string name="question07">School crosswalk ahead</string>
     <string name="question08">Winding road ahead</string>
     <string name="question09">Traffic signals ahead</string>
     <string name="question10">Slow-moving vehicle</string>
@@ -16,4 +16,9 @@
     <string name="question13">Do not stop to wait</string>
     <string name="question14">Two-way traffic</string>
     <string name="question15">This lane of traffic must turn right</string>
+    <string name="scoreText1">Your score is: </string>
+    <string name="scoreText2"> Correct/ </string>
+    <string name="scoreText3"> Incorrect</string>
+    <string name="counterText1">You have completed: </string>
+    <string name="counterText2"> out of 10 questions</string>
 </resources>

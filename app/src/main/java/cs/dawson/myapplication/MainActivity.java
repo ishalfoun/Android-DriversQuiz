@@ -1,6 +1,7 @@
 package cs.dawson.myapplication;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -12,8 +13,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,9 +24,10 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<ArrayList<Object>> imgs;
     ArrayList<ImageButton> btns;
     TextView question, scoreText, questionCounterText ;
-    int incorrectCounter =0, correctCounter=0, questionCounter=0;
+    int incorrectCounter =0, correctCounter=0, questionCounter=0, correctAnswer;
     Button btnNext;
     boolean firstIncorrect=false;
+    int incorrectId1, incorrectId2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,10 +46,16 @@ public class MainActivity extends AppCompatActivity {
             btns.add((ImageButton) findViewById(R.id.btnBotLeft));
             btns.add((ImageButton) findViewById(R.id.btnBotRight));
 
-        //comment
 
         //question
         question = (TextView)findViewById(R.id.question);
+
+        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        questionCounter = prefs.getInt("questionCounter", 0);
+        correctCounter = prefs.getInt("correctCounter", 0 );
+        incorrectCounter =  prefs.getInt("incorrectCounter", 0 );
+        updateCounters();
+
 
         //fill an array with Pairs of R.drawable & R.string (Picture & Question)
         imgs = new ArrayList<>();
@@ -65,15 +75,38 @@ public class MainActivity extends AppCompatActivity {
             imgs.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic14, R.string.question14) ) );
             imgs.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic15, R.string.question15) ) );
 
-        nextQuestion(null);
-        Drawable d = getResources().getDrawable( R.drawable.pic01 );
+        if(prefs.getBoolean("paused", false)) {
+            //restoring each of the four images+questions, + the correct answer
+            ArrayList<ArrayList<Object>> restoredImgs = new ArrayList<>();
+            restoredImgs.add(new ArrayList<Object>(Arrays.asList(
+                    prefs.getInt("pic1", (int) imgs.get(0).get(0)),
+                    prefs.getInt("pic1q", (int) imgs.get(0).get(1)))));
+            restoredImgs.add(new ArrayList<Object>(Arrays.asList(
+                    prefs.getInt("pic2", (int) imgs.get(1).get(0)),
+                    prefs.getInt("pic2q", (int) imgs.get(1).get(1)))));
+            restoredImgs.add(new ArrayList<Object>(Arrays.asList(
+                    prefs.getInt("pic3", (int) imgs.get(2).get(0)),
+                    prefs.getInt("pic3q", (int) imgs.get(2).get(1)))));
+            restoredImgs.add(new ArrayList<Object>(Arrays.asList(
+                    prefs.getInt("pic4", (int) imgs.get(3).get(0)),
+                    prefs.getInt("pic4q", (int) imgs.get(3).get(1)))));
+
+            btns.get(prefs.getInt("incorrectId2", incorrectId1)).setImageResource(R.drawable.incorrect);
+            btns.get(prefs.getInt("incorrectId2", incorrectId2)).setImageResource(R.drawable.incorrect);
+            setAllBtnListenerIncorrect();
+            displayImages(restoredImgs,
+                    prefs.getInt("correctAnswer", correctAnswer));
+
+        }
+        else
+            nextQuestion(null);
     }
+
 
     public void nextQuestion(View v)
     {
         setAllBtnListenerIncorrect();
-        setRandomImages( imgs );
-
+        displayImages( imgs , randomizeImages());
         firstIncorrect=false;
         btnNext.setVisibility(View.INVISIBLE);
     }
@@ -98,11 +131,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void setRandomImages(ArrayList<ArrayList<Object>> choice)
+    public int randomizeImages()
     {
-        Collections.shuffle(choice); // shuffle the choice images
-        int correctAnswer = new Random().nextInt(4); // get random number 0-4
+        Collections.shuffle(imgs); // shuffle the choice images
+        return new Random().nextInt(4); // get random number 0-4
+    }
 
+    public void displayImages(ArrayList<ArrayList<Object>> choice, int correctAnswer)
+    {
         //set the 4 buttons to the first 4 images in the shuffled choices-array
         btns.get(0).setBackground(getResources().getDrawable((int)choice.get(0).get(0), null));
         btns.get(1).setBackground(getResources().getDrawable((int)choice.get(1).get(0), null));
@@ -113,6 +149,11 @@ public class MainActivity extends AppCompatActivity {
         btns.get(1).setImageResource(0);
         btns.get(2).setImageResource(0);
         btns.get(3).setImageResource(0);
+
+        btns.get(0).setTag("1");
+        btns.get(1).setTag("2");
+        btns.get(2).setTag("3");
+        btns.get(3).setTag("4");
 
         //choose a correct answer, then get that image's string and set it as the question
         question.setText((int)choice.get(correctAnswer).get(1));
@@ -125,9 +166,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState)
+    {
+        super.onRestoreInstanceState(savedInstanceState);
+
+    }
+
+
     public void correct(View v)
     {
-        question.setText("CORRECT!!!");
         correctCounter++;
         questionCounter++;
         setAllBtnListenerOff();
@@ -143,15 +191,16 @@ public class MainActivity extends AppCompatActivity {
     {
         ((ImageButton) v).setImageResource(R.drawable.incorrect);//set img src to incorrect
         incorrectCounter++;
-
         if (firstIncorrect) // second incorrect
         {
             setAllBtnListenerOff();
+            incorrectId2=(int)((ImageButton)v).getTag();
             btnNext.setVisibility(View.VISIBLE);
             questionCounter++;
         }
         else // first incorrect
         {
+            incorrectId1=(int)((ImageButton)v).getTag();
             ((ImageButton) v).setOnClickListener(new View.OnClickListener() { //set img to not clickable.
                 public void onClick(View v) {
                 }
@@ -163,12 +212,57 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateCounters()
     {
-        scoreText.setText("Your score is: "+ correctCounter + " Correct/ "+incorrectCounter + " Incorrect");
-        questionCounterText.setText("You have completed " + questionCounter + " out of 10 questions");
+        scoreText.setText(getString(R.string.scoreText1) + correctCounter + getString(R.string.scoreText2) +incorrectCounter + getString(R.string.scoreText3));
+        questionCounterText.setText(getString(R.string.counterText1) + questionCounter + getString(R.string.counterText2));
         if (questionCounter == 10)
         {
-            startActivity(new Intent(this, ResultActivity.class));
+            startActivityForResult(new Intent(this, ResultActivity.class), 9);
         }
+    }
+
+    @Override
+    public void onActivityResult(int request, int result, Intent data)
+    {
+        if (request==9)
+        {
+            if (result==0)
+            {
+                questionCounter = 0;
+                correctCounter = 0;
+                incorrectCounter = 0;
+                updateCounters();
+                nextQuestion(null);
+            }
+        }
+    }
+
+
+    public void onPause()
+    {
+        super.onPause();
+        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor editor;
+        editor = prefs.edit();
+        editor.putInt("questionCounter" , questionCounter);
+        editor.putInt("correctCounter" , correctCounter );
+        editor.putInt("incorrectCounter" , incorrectCounter );
+        editor.putInt("questionCounter" , questionCounter );
+        editor.putInt("correctCounter" , correctCounter );
+        editor.putInt("incorrectCounter" , incorrectCounter );
+        //saving each of the four images+questions, + the correct answer
+        editor.putInt("pic1", (int)imgs.get(0).get(0) );
+        editor.putInt("pic1q", (int)imgs.get(0).get(1) );
+        editor.putInt("pic2", (int)imgs.get(1).get(0) );
+        editor.putInt("pic2q", (int)imgs.get(1).get(1) );
+        editor.putInt("pic3", (int)imgs.get(2).get(0) );
+        editor.putInt("pic3q", (int)imgs.get(2).get(1) );
+        editor.putInt("pic4", (int)imgs.get(3).get(0) );
+        editor.putInt("pic4q", (int)imgs.get(3).get(1) );
+        editor.putInt("correctAnswer", correctAnswer);
+        editor.putBoolean("paused", true);
+        editor.putInt("incorrectId1", incorrectId1);
+        editor.putInt("incorrectId2", incorrectId2);
+        editor.commit();
     }
 
 }
