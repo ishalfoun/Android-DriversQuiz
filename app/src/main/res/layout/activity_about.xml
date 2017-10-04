@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tvHowToPlay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:text="How to play the game: \n- You will be completing a 10 question driving quiz. \n- Choose the picture that corresponds to the description. \n- You have 2 chances. If you get it wrong twice, the right answer will be highlighted." />
+
+    <TextView
+        android:id="@+id/tvCredits"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:text="Game made by Isaak Shalfoun and Hannah Ly." />
+
+    <TextView
+        android:id="@+id/tvScores"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:text="Past highscore:" />
+</LinearLayout>
