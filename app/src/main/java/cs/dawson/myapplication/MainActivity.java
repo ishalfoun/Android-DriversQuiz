@@ -171,4 +171,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void aboutGameInfo(View v)
+    {
+        startActivity(new Intent(this, AboutActivity.class));
+    }
+
 }
