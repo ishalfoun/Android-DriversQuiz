@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 /**
- * Created by Cookiebutt on 07/10/2017.
+ *
  */
 
 public class SearchActivity extends AppCompatActivity {

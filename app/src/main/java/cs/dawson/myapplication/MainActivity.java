@@ -20,7 +20,6 @@ import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
-
     ArrayList<ArrayList<Object>> imgs;
     ArrayList<ImageButton> btns;
     TextView question, scoreText, questionCounterText ;
@@ -50,10 +49,17 @@ public class MainActivity extends AppCompatActivity {
         //question
         question = (TextView)findViewById(R.id.question);
 
-        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        /*SharedPreferences prefs = getPreferences(MODE_PRIVATE);
         questionCounter = prefs.getInt("questionCounter", 0);
         correctCounter = prefs.getInt("correctCounter", 0 );
-        incorrectCounter =  prefs.getInt("incorrectCounter", 0 );
+        incorrectCounter =  prefs.getInt("incorrectCounter", 0 );*/
+
+        // && (savedInstanceState.getInt("questionCounter") != 0) && (savedInstanceState.getInt("correcteCounter") != 0) && (savedInstanceState.getInt("incorrecteCounter") != 0)
+        if((savedInstanceState != null)) {
+            questionCounter = savedInstanceState.getInt("questionCounter");
+            correctCounter = savedInstanceState.getInt("correctCounter");
+            incorrectCounter = savedInstanceState.getInt("incorrectCounter");
+        }
         updateCounters();
 
 
@@ -75,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
             imgs.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic14, R.string.question14) ) );
             imgs.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic15, R.string.question15) ) );
 
-        if(prefs.getBoolean("paused", false)) {
+        /*if(prefs.getBoolean("paused", false)) {
             //restoring each of the four images+questions, + the correct answer
             ArrayList<ArrayList<Object>> restoredImgs = new ArrayList<>();
             restoredImgs.add(new ArrayList<Object>(Arrays.asList(
@@ -99,9 +105,37 @@ public class MainActivity extends AppCompatActivity {
 
         }
         else
+            nextQuestion(null);*/
+
+        if(savedInstanceState != null) {
+            if (savedInstanceState.getBoolean("paused", false)) {
+                //restoring each of the four images+questions, + the correct answer
+                ArrayList<ArrayList<Object>> restoredImgs = new ArrayList<>();
+                restoredImgs.add(new ArrayList<Object>(Arrays.asList(
+                        savedInstanceState.getInt("pic1", (int) imgs.get(0).get(0)),
+                        savedInstanceState.getInt("pic1q", (int) imgs.get(0).get(1)))));
+                restoredImgs.add(new ArrayList<Object>(Arrays.asList(
+                        savedInstanceState.getInt("pic2", (int) imgs.get(1).get(0)),
+                        savedInstanceState.getInt("pic2q", (int) imgs.get(1).get(1)))));
+                restoredImgs.add(new ArrayList<Object>(Arrays.asList(
+                        savedInstanceState.getInt("pic3", (int) imgs.get(2).get(0)),
+                        savedInstanceState.getInt("pic3q", (int) imgs.get(2).get(1)))));
+                restoredImgs.add(new ArrayList<Object>(Arrays.asList(
+                        savedInstanceState.getInt("pic4", (int) imgs.get(3).get(0)),
+                        savedInstanceState.getInt("pic4q", (int) imgs.get(3).get(1)))));
+
+                btns.get(savedInstanceState.getInt("incorrectId2", incorrectId1)).setImageResource(R.drawable.incorrect);
+                btns.get(savedInstanceState.getInt("incorrectId2", incorrectId2)).setImageResource(R.drawable.incorrect);
+                setAllBtnListenerIncorrect();
+                displayImages(restoredImgs,
+                        savedInstanceState.getInt("correctAnswer", correctAnswer));
+
+            } else
+                nextQuestion(null);
+        }
+        else
             nextQuestion(null);
     }
-
 
     public void nextQuestion(View v)
     {
@@ -166,13 +200,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    @Override
+    /*@Override
     public void onRestoreInstanceState(Bundle savedInstanceState)
     {
         super.onRestoreInstanceState(savedInstanceState);
-
-    }
-
+    }*/
 
     public void correct(View v)
     {
@@ -236,7 +268,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
   
-    public void onPause()
+    /*public void onPause()
     {
         super.onPause();
         SharedPreferences prefs = getPreferences(MODE_PRIVATE);
@@ -262,10 +294,13 @@ public class MainActivity extends AppCompatActivity {
         editor.putInt("incorrectId1", incorrectId1);
         editor.putInt("incorrectId2", incorrectId2);
         editor.commit();
-    }
+    }*/
     public void aboutGameInfo(View v)
     {
-        startActivity(new Intent(this, AboutActivity.class));
+        //startActivity(new Intent(this, AboutActivity.class));
+        Intent intent = new Intent(this, AboutActivity.class);
+        intent.putExtra("correctCounter", correctCounter);
+        startActivity(intent);
     }
 
     public void hintSearch(View v)
@@ -273,4 +308,40 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(this, SearchActivity.class));
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState){
+        super.onSaveInstanceState(outState);
+
+        outState.putInt("questionCounter" , questionCounter);
+        outState.putInt("correctCounter" , correctCounter );
+        outState.putInt("incorrectCounter" , incorrectCounter );
+        outState.putInt("questionCounter" , questionCounter );
+        outState.putInt("correctCounter" , correctCounter );
+        outState.putInt("incorrectCounter" , incorrectCounter );
+
+        //outState.putString("question", question.toString());
+        outState.putInt("pic1", (int)imgs.get(0).get(0) );
+        outState.putInt("pic1q", (int)imgs.get(0).get(1) );
+        outState.putInt("pic2", (int)imgs.get(1).get(0) );
+        outState.putInt("pic2q", (int)imgs.get(1).get(1) );
+        outState.putInt("pic3", (int)imgs.get(2).get(0) );
+        outState.putInt("pic3q", (int)imgs.get(2).get(1) );
+        outState.putInt("pic4", (int)imgs.get(3).get(0) );
+        outState.putInt("pic4q", (int)imgs.get(3).get(1) );
+        outState.putInt("correctAnswer", correctAnswer);
+        outState.putBoolean("paused", true);
+        outState.putInt("incorrectId1", incorrectId1);
+        outState.putInt("incorrectId2", incorrectId2);
+    }
+
+    public void onPause(){
+        super.onPause();
+
+        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+
+        editor.putInt("score", correctCounter);
+
+        editor.commit();
+    }
 }
