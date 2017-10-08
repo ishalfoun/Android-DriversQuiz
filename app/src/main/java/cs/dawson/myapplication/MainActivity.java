@@ -137,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
             nextQuestion(null);
     }
 
+
     public void nextQuestion(View v)
     {
         setAllBtnListenerIncorrect();
@@ -295,6 +296,7 @@ public class MainActivity extends AppCompatActivity {
         editor.putInt("incorrectId2", incorrectId2);
         editor.commit();
     }*/
+  
     public void aboutGameInfo(View v)
     {
         //startActivity(new Intent(this, AboutActivity.class));
