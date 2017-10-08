@@ -6,4 +6,21 @@
     android:layout_height="match_parent"
     tools:context="cs.dawson.myapplication.ResultActivity">
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="game over"
+        tools:layout_editor_absoluteX="162dp"
+        tools:layout_editor_absoluteY="182dp" />
+
+    <Button
+        android:id="@+id/playAgain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="playAgain"
+        android:text="Play Again"
+        tools:layout_editor_absoluteX="147dp"
+        tools:layout_editor_absoluteY="219dp" />
+
 </android.support.constraint.ConstraintLayout>

@@ -9,19 +9,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp"
-        android:text="How to play the game: \n- You will be completing a 10 question driving quiz. \n- Choose the picture that corresponds to the description. \n- You have 2 chances. If you get it wrong twice, the right answer will be highlighted." />
+        android:text="@string/instructions" />
 
     <TextView
         android:id="@+id/tvCredits"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp"
-        android:text="Game made by Isaak Shalfoun and Hannah Ly." />
+        android:text="@string/credits" />
 
     <TextView
         android:id="@+id/tvScores"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp"
-        android:text="Past highscore:" />
+        android:text="@string/scoresTitle" />
+
+    <TextView
+        android:id="@+id/tvDisplayScores"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp" />
 </LinearLayout>

@@ -1,13 +1,13 @@
 <resources>
     <string name="app_name">Drivers Quiz</string>
-    <string name="questiontitle">Which Image matches:</string>
+    <string name="questiontitle">Which image matches:</string>
     <string name="question01">Railway crossing ahead</string>
     <string name="question02">Right lane ends ahead</string>
     <string name="question03">No turns allowed</string>
     <string name="question04">Road slippery when wet</string>
     <string name="question05">You must yield the right-of-way</string>
     <string name="question06">Bump ahead</string>
-    <string name="question07">school crosswalk ahead</string>
+    <string name="question07">School crosswalk ahead</string>
     <string name="question08">Winding road ahead</string>
     <string name="question09">Traffic signals ahead</string>
     <string name="question10">Slow-moving vehicle</string>
@@ -16,4 +16,14 @@
     <string name="question13">Do not stop to wait</string>
     <string name="question14">Two-way traffic</string>
     <string name="question15">This lane of traffic must turn right</string>
+    <string name="scoreText1">Your score is: </string>
+    <string name="scoreText2"> Correct/ </string>
+    <string name="scoreText3"> Incorrect</string>
+    <string name="counterText1">You have completed: </string>
+    <string name="counterText2"> out of 10 questions</string>
+    <string name="instructions">How to play the game: \n- You will be completing a 10 question driving quiz.
+        \n- Choose the picture that corresponds to the description. \n- You have 2 chances. If you get it wrong twice, the right answer will be highlighted.</string>
+    <string name="creditsTitle">Credits</string>
+    <string name="credits">Game made by Isaak Shalfoun and Hannah Ly.</string>
+    <string name="scoresTitle">Past highscores:</string>
 </resources>
