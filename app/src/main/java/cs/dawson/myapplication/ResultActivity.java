@@ -5,6 +5,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+/**
+ * @author Isaak Shalfoun
+ * @version 10-10-2017
+ */
 public class ResultActivity extends AppCompatActivity {
 
     @Override

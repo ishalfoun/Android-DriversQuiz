@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Test de conduite</string>
+    <string name="counterText2">questions</string>
+    <string name="counterText1">Vous avez completer:</string>
+    <string name="credits">Jeu créer par Isaak Shalfoun et Hannah Ly.</string>
+    <string name="creditsTitle">Crédits</string>
+    <string name="instructions">"Comment jouer au jeu: \n- Vous allez complèter un quiz de 10 questions. \n- Choisisez l'imagige qui corresponds à la description.
+        \n- Vous avez 2 chances. Si vous ratez les 2 chances, la bonne image serait pointer pour vous."</string>
+    <string name="question01">Chemin de fer devant</string>
+    <string name="question02">Voie de droite se termine</string>
+    <string name="question03">Aucun virage autorisé</string>
+    <string name="question04">Route glissante</string>
+    <string name="question05">Vous devez cédez le doit de passage</string>
+    <string name="question06">Bosse devant</string>
+    <string name="question07">Traverse écolière devant</string>
+    <string name="question08">Route sinueuse devant</string>
+    <string name="question09">Panneau de circulation devant</string>
+    <string name="question10">Véhicule à déplacement lent</string>
+    <string name="question11">Pont étroit devant</string>
+    <string name="question12">Route divisée devant</string>
+    <string name="question13">Ne pas arrêter pour attendre</string>
+    <string name="question14">Trafic bidirectionnel</string>
+    <string name="question15">Cette voie de circulation doit tourner à droite</string>
+    <string name="questiontitle">Quelle images corresponds à:</string>
+    <string name="scoreText1">"Votre score est: "</string>
+    <string name="scoreText2">Correcte/</string>
+    <string name="scoreText3">Incorrecte</string>
+    <string name="scoresTitle">Dernier classement:</string>
+    <string name="searchPrefix">paneau de signalisation</string>
+    <string name="aboutBtn">Info</string>
+    <string name="hintBtn">Aide</string>
+    <string name="playAgain">Rejouez</string>
+    <string name="endGame">Fin du quiz</string>
+</resources>

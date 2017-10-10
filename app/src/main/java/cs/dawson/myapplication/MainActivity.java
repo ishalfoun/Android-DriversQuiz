@@ -8,11 +8,18 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.*;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
+/**
+ * @author Isaak Shalfoun and Hannah Ly
+ * @version 10-10-2017
+ *
+ * The game consist of a driving quiz where you identified the image that corresponds to the given
+ * description.
+ * This class has all the logic for the game and fires other activities.
+ */
 public class MainActivity extends AppCompatActivity {
 
     ArrayList<ArrayList<Object>> questionPool;
@@ -24,6 +31,11 @@ public class MainActivity extends AppCompatActivity {
     Button btnNext;
     boolean firstIncorrect=true;
 
+    /**
+     * This method is overriding the super onCreate class. It recreated the game depending on if
+     * we are starting up the app again or if we rotated the screen.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,12 +82,6 @@ public class MainActivity extends AppCompatActivity {
         questionPool.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic15, R.string.question15, 15) ) );
         //TODO: get a 16th picture and text
         questionPool.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic15, R.string.question15, 16) ) );
-
-        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
-        questionCounter = prefs.getInt("questionCounter", 0);
-        correctCounter = prefs.getInt("correctCounter", 0 );
-        incorrectCounter =  prefs.getInt("incorrectCounter", 0 );
-
 
         if((savedInstanceState != null)) {
             Log.d("MYTYPE", "loading now" );
@@ -137,6 +143,10 @@ public class MainActivity extends AppCompatActivity {
         updateCounters();
     }
 
+    /**
+     * This method is used to set up the GUI for the next question.
+     * @param v
+     */
     public void nextQuestion(View v)
     {
         setAllBtnListenerIncorrect();
@@ -146,6 +156,9 @@ public class MainActivity extends AppCompatActivity {
         btnNext.setVisibility(View.INVISIBLE);
     }
 
+    /**
+     *
+     */
     public void setAllBtnListenerIncorrect()
     {
         for (ImageButton btn : btns ) {
@@ -162,6 +175,10 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     }
+
+    /**
+     *
+     */
     public void setAllBtnListenerOff()
     {
         for (ImageButton btn : btns ) {
@@ -172,6 +189,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This method is overriding the super onPause method.
+     * It is used when we want to save informations about our game when the app is not visible.
+     */
     @Override
     public void onPause()
     {
@@ -186,6 +207,9 @@ public class MainActivity extends AppCompatActivity {
         editor.commit();
     }
 
+    /**
+     * This method is used to get 4 new questions to display on the GUI.
+     */
     public void get4newQuestions()
     {
         //remove overlaying pictures
@@ -203,6 +227,11 @@ public class MainActivity extends AppCompatActivity {
         }
         correctAnswer = new Random().nextInt(4);
     }
+
+    /**
+     * This method is used to display the randomized pictures for the question in the appropriate
+     * place.
+     */
     public void displayImages()
     {
         //set the 4 buttons to the 4 qs
@@ -222,7 +251,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
+    /**
+     * This method is used to save information about the game when we rotate the screen.
+     * It overrides the super onSaveInstanceState method.
+     * @param outState
+     */
     @Override
     protected void onSaveInstanceState(Bundle outState)
     {
@@ -243,6 +276,10 @@ public class MainActivity extends AppCompatActivity {
         outState.putInt("btnListenerOff", btnListenerOff);
     }
 
+    /**
+     *
+     * @param v
+     */
     public void correct(View v)
     {
         questionsUsed.remove(correctAnswer); // remove this question forever
@@ -264,6 +301,10 @@ public class MainActivity extends AppCompatActivity {
         updateCounters();
     }
 
+    /**
+     *
+     * @param v
+     */
     public void incorrect(View v)
     {
         ((ImageButton) v).setImageResource(R.drawable.incorrect);// mark img as incorrect
@@ -296,33 +337,58 @@ public class MainActivity extends AppCompatActivity {
         }
         updateCounters();
 
-        Log.d("MYTYPE" ,  "qimgs size: " + qimgs.size());
-        Log.d("MYTYPE" ,  "imgs size: " + imgs.size());}
-
         Log.d("MYTYPE" ,  "questionsUsed size: " + questionsUsed.size());
         Log.d("MYTYPE" ,  "questionPool size: " + questionPool.size());
     }
 
+    /**
+     * This method updates the text that shows the counters for the correct/incorrect number of
+     * questions and the number of questions answered at that point.
+     * If the question counter reaches 10, it means that it is the end of the game and fires
+     * the result activity. It then resets the counters and gets the next set of question for when
+     * the user wants to play again.
+     */
     public void updateCounters()
     {
-        scoreText.setText(getString(R.string.scoreText1) + correctCounter + getString(R.string.scoreText2) +incorrectCounter + getString(R.string.scoreText3));
-        questionCounterText.setText(getString(R.string.counterText1) + questionCounter + getString(R.string.counterText2));
-        /*if (questionCounter == 10)
+        scoreText.setText(getString(R.string.scoreText1) + " " + correctCounter +  " " + getString(R.string.scoreText2) +incorrectCounter +  " " + getString(R.string.scoreText3));
+        questionCounterText.setText(getString(R.string.counterText1) + " " + questionCounter +  " " + getString(R.string.counterText2));
+        if (questionCounter == 10)
         {
+            incorrectCounter =0;
+            correctCounter=0;
+            questionCounter=0;
             startActivityForResult(new Intent(this, ResultActivity.class), 9);
-        }*/
+
+            nextQuestion(null);
+            updateCounters();
+
+        }
     }
+
+    /**
+     * This method fires the AboutActiviy.
+     * @param v
+     */
     public void aboutGameInfo(View v)
     {
-        //startActivity(new Intent(this, AboutActivity.class));
         Intent intent = new Intent(this, AboutActivity.class);
-        intent.putExtra("correctCounter", correctCounter);
+        if(questionCounter == 10) {
+            intent.putExtra("correctCounter", correctCounter);
+        }
         startActivity(intent);
     }
 
+    /**
+     * This method fires the SearchActivity.
+     * @param v
+     */
     public void hintSearch(View v)
     {
-        startActivity(new Intent(this, SearchActivity.class));
+        TextView question = (TextView)findViewById(R.id.question);
+        String q = question.getText().toString();
+        Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
+        intent.putExtra(SearchManager.QUERY, getString(R.string.searchPrefix) + " " + q);
+        startActivity(intent);
     }
 
 }

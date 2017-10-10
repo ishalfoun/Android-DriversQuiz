@@ -112,7 +112,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="hintSearch"
-            android:text="Hint" />
+            android:text="@string/hintBtn" />
 
         <Button
             android:id="@+id/btnAbout"
@@ -120,7 +120,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="aboutGameInfo"
-            android:text="About" />
+            android:text="@string/aboutBtn" />
     </LinearLayout>
 
 </LinearLayout>

@@ -17,9 +17,6 @@
         </activity>
         <activity android:name=".ResultActivity"></activity>
         <activity android:name=".AboutActivity"></activity>
-        <activity android:name=".SearchActivity">
-            <action android:name="com.google.android.gms.actions.ACTION_WEB_SEARCH"/>
-        </activity>
     </application>
 
 </manifest>
