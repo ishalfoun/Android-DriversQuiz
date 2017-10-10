@@ -26,4 +26,9 @@
     <string name="creditsTitle">Credits</string>
     <string name="credits">Game made by Isaak Shalfoun and Hannah Ly.</string>
     <string name="scoresTitle">Past highscores:</string>
+    <string name="searchPrefix">road sign</string>
+    <string name="aboutBtn">About</string>
+    <string name="hintBtn">Hint</string>
+    <string name="playAgain">Play again</string>
+    <string name="endGame">The quiz is finished.</string>
 </resources>
