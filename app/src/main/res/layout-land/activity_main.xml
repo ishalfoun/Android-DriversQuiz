@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingLeft="56dp"
-    android:paddingRight="56dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
     tools:context="cs.dawson.myapplication.MainActivity">
 
     <LinearLayout
@@ -29,57 +29,43 @@
             android:text="" />
     </LinearLayout>
 
-    <GridLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:columnCount="2"
-        android:rowCount="2">
+        android:layout_height="wrap_content">
 
         <ImageButton
             android:id="@+id/btnTopLeft"
-            android:layout_height="100dp"
-            android:layout_width="100dp"
-            android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
-            android:layout_column="0"
-            android:layout_row="0"
+            android:layout_height="150dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:onClick=""
             android:scaleType="centerInside" />
 
         <ImageButton
             android:id="@+id/btnTopRight"
-            android:layout_height="100dp"
-            android:layout_width="100dp"
-            android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
-            android:layout_column="0"
-            android:layout_row="1"
+            android:layout_height="150dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:onClick=""
             android:scaleType="centerInside" />
 
         <ImageButton
             android:id="@+id/btnBotLeft"
-            android:layout_height="100dp"
-            android:layout_width="100dp"
-            android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
-            android:layout_column="1"
-            android:layout_row="0"
+            android:layout_height="150dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:onClick=""
             android:scaleType="centerInside"/>
 
         <ImageButton
             android:id="@+id/btnBotRight"
-            android:layout_height="100dp"
-            android:layout_width="100dp"
-            android:layout_columnWeight="1"
-            android:layout_rowWeight="1"
-            android:layout_column="1"
-            android:layout_row="1"
+            android:layout_height="150dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:onClick=""
             android:scaleType="centerInside"/>
 
-    </GridLayout>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/ScoreText"
@@ -112,7 +98,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="hintSearch"
-            android:text="@string/hintBtn" />
+            android:text="Hint" />
 
         <Button
             android:id="@+id/btnAbout"
@@ -120,7 +106,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="aboutGameInfo"
-            android:text="@string/aboutBtn" />
+            android:text="About" />
     </LinearLayout>
 
 </LinearLayout>
