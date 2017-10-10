@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<ArrayList<Object>> questionsUsed;
     ArrayList<ImageButton> btns;
     TextView question, scoreText, questionCounterText ;
-    int incorrectCounter =0, correctCounter=0, questionCounter=0, correctAnswer,
+    int incorrectCounter =0, savedhighscore, highscore, correctCounter=0, questionCounter=0, correctAnswer,
     falseAnswerSignal, btnListenerOff, incorrectId1, incorrectId2, rand;
     Button btnNext;
     boolean firstIncorrect=true;
@@ -83,6 +83,13 @@ public class MainActivity extends AppCompatActivity {
         //TODO: get a 16th picture and text
         questionPool.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic15, R.string.question15, 16) ) );
 
+
+        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        questionCounter=prefs.getInt("questionCounter" , questionCounter);
+        correctCounter=prefs.getInt("correctCounter" , correctCounter );
+        incorrectCounter=prefs.getInt("incorrectCounter" , incorrectCounter );
+        savedhighscore = prefs.getInt("highscore",0);
+
         if((savedInstanceState != null)) {
             Log.d("MYTYPE", "loading now" );
             questionCounter = savedInstanceState.getInt("questionCounter");
@@ -91,12 +98,14 @@ public class MainActivity extends AppCompatActivity {
 
             correctAnswer=savedInstanceState.getInt("qcorrect");
 
-            falseAnswerSignal = savedInstanceState.getInt("falseAnswerSignal", -1);
+            falseAnswerSignal = savedInstanceState.getInt("falseAnswerSignal");
 
+            Log.d("MYTYPE", " falseanswer " + falseAnswerSignal);
             if (falseAnswerSignal!=-1) {
                 btns.get(falseAnswerSignal).setImageResource(R.drawable.incorrect);// mark img as incorrect
                 firstIncorrect = false;
             }
+
             if (savedInstanceState.getBoolean("btnNextVisibility"))
             {
                 nextQuestion(null);
@@ -138,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
             displayImages();
         }
         else {
+            btnListenerOff=-1;
             nextQuestion(null);
         }
         updateCounters();
@@ -168,6 +178,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+
+        Log.d("MYTYPE", " btnlisteneroff= " + btnListenerOff);
         if ( btnListenerOff!=-1) {
             btns.get(btnListenerOff).setOnClickListener(new View.OnClickListener() { //turn off click listener
                 public void onClick(View v) {
@@ -203,6 +215,9 @@ public class MainActivity extends AppCompatActivity {
         editor.putInt("questionCounter" , questionCounter);
         editor.putInt("correctCounter" , correctCounter );
         editor.putInt("incorrectCounter" , incorrectCounter );
+
+        if (highscore > savedhighscore)
+            editor.putInt("highscore" , highscore );
 
         editor.commit();
     }
@@ -271,7 +286,7 @@ public class MainActivity extends AppCompatActivity {
         }
         outState.putInt("qcorrect", correctAnswer);
         outState.putBoolean("firstIncorrect", firstIncorrect);
-        outState.putInt("falseAnswerSignal1", falseAnswerSignal);
+        outState.putInt("falseAnswerSignal", falseAnswerSignal);
         outState.putBoolean("btnNextVisibility", btnNext.getVisibility()==View.VISIBLE);
         outState.putInt("btnListenerOff", btnListenerOff);
     }
@@ -319,11 +334,14 @@ public class MainActivity extends AppCompatActivity {
         {
             firstIncorrect = false;
             falseAnswerSignal = (int) v.getTag();
+            Log.d("MYTYPE", " falseanswer ::::" + falseAnswerSignal);
         }
         else // if this is second incorrect
         {
             setAllBtnListenerOff();
             btnNext.setVisibility(View.VISIBLE);
+            btns.get(correctAnswer).setImageResource(R.drawable.correct);//mark img as correct
+
             questionCounter++;
             //put all qs back into pool
             questionPool.add(questionsUsed.get(0));
@@ -352,6 +370,9 @@ public class MainActivity extends AppCompatActivity {
     {
         scoreText.setText(getString(R.string.scoreText1) + " " + correctCounter +  " " + getString(R.string.scoreText2) +incorrectCounter +  " " + getString(R.string.scoreText3));
         questionCounterText.setText(getString(R.string.counterText1) + " " + questionCounter +  " " + getString(R.string.counterText2));
+
+        highscore=correctCounter;
+
         if (questionCounter == 10)
         {
             incorrectCounter =0;
@@ -361,6 +382,7 @@ public class MainActivity extends AppCompatActivity {
 
             nextQuestion(null);
             updateCounters();
+
 
         }
     }
@@ -372,9 +394,7 @@ public class MainActivity extends AppCompatActivity {
     public void aboutGameInfo(View v)
     {
         Intent intent = new Intent(this, AboutActivity.class);
-        if(questionCounter == 10) {
-            intent.putExtra("correctCounter", correctCounter);
-        }
+        intent.putExtra("highscore", highscore);
         startActivity(intent);
     }
 

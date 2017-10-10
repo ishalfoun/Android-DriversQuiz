@@ -24,11 +24,17 @@ public class AboutActivity extends AppCompatActivity{
         int temp = prefs.getInt("score", 0);
         score.setText(""+temp);*/
 
-        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
-        Intent intent = getIntent();
         TextView score = (TextView)findViewById(R.id.tvDisplayScores);
-        int temp = prefs.getInt("highscore", 55);
-        score.setText("" + temp);
+
+        Bundle extras = getIntent().getExtras();
+        if (extras == null) {
+            return;
+        }
+        // get data via the key
+        int value1 = extras.getInt("highscore");
+
+            score.setText("" + value1);
+
     }
 
     @Override
