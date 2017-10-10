@@ -1,5 +1,6 @@
 package cs.dawson.myapplication;
 
+import android.app.SearchManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
@@ -220,7 +221,6 @@ public class MainActivity extends AppCompatActivity {
         }
         updateCounters();
 
-
         Log.d("MYTYPE" ,  "qimgs size: " + qimgs.size());
         Log.d("MYTYPE" ,  "imgs size: " + imgs.size());}
 
@@ -288,7 +288,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void hintSearch(View v)
     {
-        startActivity(new Intent(this, SearchActivity.class));
+        TextView question = (TextView)findViewById(R.id.question);
+        String q = question.getText().toString();
+        Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
+        intent.putExtra(SearchManager.QUERY, "road sign " + q);
+        startActivity(intent);
     }
 /*
     @Override

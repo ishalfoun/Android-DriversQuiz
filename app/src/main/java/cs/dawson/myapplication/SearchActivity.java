@@ -12,10 +12,12 @@ import android.view.View;
 public class SearchActivity extends AppCompatActivity {
 
     public void search(View v){
+        String q = "no stop sign";
         Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
-        intent.putExtra(SearchManager.QUERY, "https://google.com");
+        intent.putExtra(SearchManager.QUERY, q);
         if(intent.resolveActivity(getPackageManager()) != null){
-            startActivity(intent);
+
         }
+        startActivity(intent);
     }
 }
