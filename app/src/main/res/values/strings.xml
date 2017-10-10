@@ -20,7 +20,7 @@
     <string name="scoreText2"> Correct/ </string>
     <string name="scoreText3"> Incorrect</string>
     <string name="counterText1">You have completed: </string>
-    <string name="counterText2"> out of 10 questions</string>
+    <string name="counterText2"> questions</string>
     <string name="instructions">How to play the game: \n- You will be completing a 10 question driving quiz.
         \n- Choose the picture that corresponds to the description. \n- You have 2 chances. If you get it wrong twice, the right answer will be highlighted.</string>
     <string name="creditsTitle">Credits</string>

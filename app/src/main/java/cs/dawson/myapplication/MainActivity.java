@@ -2,8 +2,6 @@ package cs.dawson.myapplication;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,26 +10,18 @@ import android.widget.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
-    ArrayList<ArrayList<Object>> imgs;
-    ArrayList<ArrayList<Object>> qimgs;
+    ArrayList<ArrayList<Object>> questionPool;
+    ArrayList<ArrayList<Object>> questionsUsed;
     ArrayList<ImageButton> btns;
     TextView question, scoreText, questionCounterText ;
-    int incorrectCounter =0, correctCounter=0, questionCounter=0, correctAnswer;
+    int incorrectCounter =0, correctCounter=0, questionCounter=0, correctAnswer,
+    falseAnswerSignal, btnListenerOff, incorrectId1, incorrectId2, rand;
     Button btnNext;
     boolean firstIncorrect=true;
-    int incorrectId1, incorrectId2;
-
-    int rand;
-    ArrayList<Integer> qlist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,49 +40,107 @@ public class MainActivity extends AppCompatActivity {
         btns.add((ImageButton) findViewById(R.id.btnBotLeft));
         btns.add((ImageButton) findViewById(R.id.btnBotRight));
 
+        btns.get(0).setTag(0);
+        btns.get(1).setTag(1);
+        btns.get(2).setTag(2);
+        btns.get(3).setTag(3);
 
         //question
         question = (TextView)findViewById(R.id.question);
+
+        questionsUsed = new ArrayList<>();
+
+        //fill an array with Pairs of R.drawable & R.string (Picture & Question)
+        questionPool = new ArrayList<>();
+        questionPool.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic01, R.string.question01, 1) ) );
+        questionPool.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic02, R.string.question02, 2) ) );
+        questionPool.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic03, R.string.question03, 3) ) );
+        questionPool.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic04, R.string.question04, 4) ) );
+        questionPool.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic05, R.string.question05, 5) ) );
+        questionPool.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic06, R.string.question06, 6) ) );
+        questionPool.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic07, R.string.question07, 7) ) );
+        questionPool.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic08, R.string.question08, 8) ) );
+        questionPool.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic09, R.string.question09, 9) ) );
+        questionPool.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic10, R.string.question10, 10) ) );
+        questionPool.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic11, R.string.question11, 11) ) );
+        questionPool.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic12, R.string.question12, 12) ) );
+        questionPool.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic13, R.string.question13, 13) ) );
+        questionPool.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic14, R.string.question14, 14) ) );
+        questionPool.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic15, R.string.question15, 15) ) );
+        //TODO: get a 16th picture and text
+        questionPool.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic15, R.string.question15, 16) ) );
+
+        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        questionCounter = prefs.getInt("questionCounter", 0);
+        correctCounter = prefs.getInt("correctCounter", 0 );
+        incorrectCounter =  prefs.getInt("incorrectCounter", 0 );
+
+
         if((savedInstanceState != null)) {
+            Log.d("MYTYPE", "loading now" );
             questionCounter = savedInstanceState.getInt("questionCounter");
             correctCounter = savedInstanceState.getInt("correctCounter");
             incorrectCounter = savedInstanceState.getInt("incorrectCounter");
+
+            correctAnswer=savedInstanceState.getInt("qcorrect");
+
+            falseAnswerSignal = savedInstanceState.getInt("falseAnswerSignal", -1);
+
+            if (falseAnswerSignal!=-1) {
+                btns.get(falseAnswerSignal).setImageResource(R.drawable.incorrect);// mark img as incorrect
+                firstIncorrect = false;
+            }
+            if (savedInstanceState.getBoolean("btnNextVisibility"))
+            {
+                nextQuestion(null);
+                return;
+            }
+            ArrayList<Object> item;
+            for(int i = 0; i< questionPool.size(); i++) //ArrayList<Object> item : questionPool)
+            {
+                item = questionPool.get(i);
+                if ((int)item.get(2) == savedInstanceState.getInt("q1")) // if the id of the question matches the saved index
+                {
+                    questionsUsed.add(item);
+                    questionPool.remove(item);
+                    i--;
+                }
+                if ((int)item.get(2) == savedInstanceState.getInt("q2")) // if the id of the question matches the saved index
+                {
+                    questionsUsed.add(item);
+                    questionPool.remove(item);
+                    i--;
+                }
+                if ((int)item.get(2) == savedInstanceState.getInt("q3")) // if the id of the question matches the saved index
+                {
+                    questionsUsed.add(item);
+                    questionPool.remove(item);
+                    i--;
+                }
+                if ((int)item.get(2) == savedInstanceState.getInt("q4")) // if the id of the question matches the saved index
+                {
+                    questionsUsed.add(item);
+                    questionPool.remove(item);
+                    i--;
+                }
+            }
+            btnListenerOff = savedInstanceState.getInt("btnListenerOff");
+
+            Log.d("MYTYPE", "After loading: questionsUsed size= " + questionsUsed.size() );
+            setAllBtnListenerIncorrect();
+            displayImages();
+        }
+        else {
+            nextQuestion(null);
         }
         updateCounters();
-
-
-        //fill an array with Pairs of R.drawable & R.string (Picture & Question)
-        imgs = new ArrayList<>();
-        imgs.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic01, R.string.question01) ) );
-        imgs.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic02, R.string.question02) ) );
-        imgs.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic03, R.string.question03) ) );
-        imgs.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic04, R.string.question04) ) );
-        imgs.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic05, R.string.question05) ) );
-        imgs.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic06, R.string.question06) ) );
-        imgs.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic07, R.string.question07) ) );
-        imgs.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic08, R.string.question08) ) );
-        imgs.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic09, R.string.question09) ) );
-        imgs.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic10, R.string.question10) ) );
-        imgs.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic11, R.string.question11) ) );
-        imgs.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic12, R.string.question12) ) );
-        imgs.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic13, R.string.question13) ) );
-        imgs.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic14, R.string.question14) ) );
-        imgs.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic15, R.string.question15) ) );
-        imgs.add( new ArrayList<Object>( Arrays.asList(R.drawable.pic15, R.string.question15) ) );
-
-
-        qimgs = new ArrayList<>();
-
-        //qlist = new ArrayList<Object>();
-
-        nextQuestion(null);
     }
-
 
     public void nextQuestion(View v)
     {
         setAllBtnListenerIncorrect();
-        displayImages(/* imgs , randomizeImages()*/);
+        get4newQuestions();        //now we have 4 qs.
+        displayImages();
         firstIncorrect=true;
         btnNext.setVisibility(View.INVISIBLE);
     }
@@ -103,6 +151,12 @@ public class MainActivity extends AppCompatActivity {
             btn.setOnClickListener( new View.OnClickListener() {
                 public void onClick(View v) {
                     incorrect(v);
+                }
+            });
+        }
+        if ( btnListenerOff!=-1) {
+            btns.get(btnListenerOff).setOnClickListener(new View.OnClickListener() { //turn off click listener
+                public void onClick(View v) {
                 }
             });
         }
@@ -117,140 +171,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public int randomizeImages()
-    {
-        Collections.shuffle(imgs); // shuffle the choice images
-        return new Random().nextInt(4); // get random number 0-3
-    }
-
-    public void displayImages()
-    {
-        for (int i=0; i<=3; i++) //loop four times
-        {
-            rand = new Random().nextInt(imgs.size());
-            qimgs.add(imgs.get(rand)); //add random q into qlist;
-            imgs.remove(rand); //remove that q from imgs
-
-
-        }
-        //now we have 4 qs.
-
-        Log.d("MYTYPE" ,  "qimgs size: " + qimgs.size());
-        Log.d("MYTYPE" ,  "imgs size: " + imgs.size());
-        //set the 4 buttons to the 4 qs
-        btns.get(0).setBackground(getResources().getDrawable((int)qimgs.get(0).get(0), null));
-        btns.get(1).setBackground(getResources().getDrawable((int)qimgs.get(1).get(0), null));
-        btns.get(2).setBackground(getResources().getDrawable((int)qimgs.get(2).get(0), null));
-        btns.get(3).setBackground(getResources().getDrawable((int)qimgs.get(3).get(0), null));
-
-        //remove overlaying pictures
-        btns.get(0).setImageResource(0);
-        btns.get(1).setImageResource(0);
-        btns.get(2).setImageResource(0);
-        btns.get(3).setImageResource(0);
-
-        //choose a correct answer, then get that image's string and set it as the question
-        rand = new Random().nextInt(4);
-        question.setText((int)qimgs.get(rand).get(1));
-
-        //set the correct answer's onClickListener
-        btns.get(rand).setOnClickListener( new View.OnClickListener() {
-            public void onClick(View v) {
-                correct(v);
-            }
-        });
-    }
-
-    /*@Override
-    public void onRestoreInstanceState(Bundle savedInstanceState)
-    {
-        super.onRestoreInstanceState(savedInstanceState);
-    }*/
-
-    public void correct(View v)
-    {
-
-        qimgs.remove(rand); // remove this question forever
-
-        //move the other answers back into usable pool
-        imgs.add(qimgs.get(0));
-        imgs.add(qimgs.get(1));
-        imgs.add(qimgs.get(2));
-        qimgs.remove(0);
-        qimgs.remove(0);
-        qimgs.remove(0);
-
-        correctCounter++;
-        questionCounter++;
-        setAllBtnListenerOff();
-        ((ImageButton) v).setImageResource(R.drawable.correct);//mark img as correct
-        btnNext.setVisibility(View.VISIBLE);
-        updateCounters();
-
-        Log.d("MYTYPE" ,  "qimgs size: " + qimgs.size());
-        Log.d("MYTYPE" ,  "imgs size: " + imgs.size());    }
-
-    public void incorrect(View v)
-    {
-        ((ImageButton) v).setImageResource(R.drawable.incorrect);// mark img as incorrect
-
-        ((ImageButton) v).setOnClickListener(new View.OnClickListener() { //turn off click listener
-            public void onClick(View v) {  }
-        });
-
-        incorrectCounter++;
-
-        if (firstIncorrect) // if this is the first incorrect
-            firstIncorrect = false;
-        else // if this is second incorrect
-        {
-            setAllBtnListenerOff();
-            btnNext.setVisibility(View.VISIBLE);
-            questionCounter++;
-
-            //put all qs back into pool
-            imgs.add(qimgs.get(0));
-            imgs.add(qimgs.get(1));
-            imgs.add(qimgs.get(2));
-            imgs.add(qimgs.get(3));
-            qimgs.remove(0);
-            qimgs.remove(0);
-            qimgs.remove(0);
-            qimgs.remove(0);
-        }
-        updateCounters();
-
-
-        Log.d("MYTYPE" ,  "qimgs size: " + qimgs.size());
-        Log.d("MYTYPE" ,  "imgs size: " + imgs.size());}
-
-    public void updateCounters()
-    {
-        scoreText.setText(getString(R.string.scoreText1) + correctCounter + getString(R.string.scoreText2) +incorrectCounter + getString(R.string.scoreText3));
-        questionCounterText.setText(getString(R.string.counterText1) + questionCounter + getString(R.string.counterText2));
-        if (questionCounter == 10)
-        {
-            startActivityForResult(new Intent(this, ResultActivity.class), 9);
-        }
-    }
-/*
     @Override
-    public void onActivityResult(int request, int result, Intent data)
-    {
-        if (request==9)
-        {
-            if (result==0)
-            {
-                questionCounter = 0;
-                correctCounter = 0;
-                incorrectCounter = 0;
-                updateCounters();
-                nextQuestion(null);
-            }
-        }
-    }*/
-
-    /*public void onPause()
+    public void onPause()
     {
         super.onPause();
         SharedPreferences prefs = getPreferences(MODE_PRIVATE);
@@ -259,25 +181,133 @@ public class MainActivity extends AppCompatActivity {
         editor.putInt("questionCounter" , questionCounter);
         editor.putInt("correctCounter" , correctCounter );
         editor.putInt("incorrectCounter" , incorrectCounter );
-        editor.putInt("questionCounter" , questionCounter );
-        editor.putInt("correctCounter" , correctCounter );
-        editor.putInt("incorrectCounter" , incorrectCounter );
-        //saving each of the four images+questions, + the correct answer
-        editor.putInt("pic1", (int)imgs.get(0).get(0) );
-        editor.putInt("pic1q", (int)imgs.get(0).get(1) );
-        editor.putInt("pic2", (int)imgs.get(1).get(0) );
-        editor.putInt("pic2q", (int)imgs.get(1).get(1) );
-        editor.putInt("pic3", (int)imgs.get(2).get(0) );
-        editor.putInt("pic3q", (int)imgs.get(2).get(1) );
-        editor.putInt("pic4", (int)imgs.get(3).get(0) );
-        editor.putInt("pic4q", (int)imgs.get(3).get(1) );
-        editor.putInt("correctAnswer", correctAnswer);
-        editor.putBoolean("paused", true);
-        editor.putInt("incorrectId1", incorrectId1);
-        editor.putInt("incorrectId2", incorrectId2);
-        editor.commit();
-    }*/
 
+        editor.commit();
+    }
+
+    public void get4newQuestions()
+    {
+        //remove overlaying pictures
+        btns.get(0).setImageResource(0);
+        btns.get(1).setImageResource(0);
+        btns.get(2).setImageResource(0);
+        btns.get(3).setImageResource(0);
+        falseAnswerSignal=-1;
+        btnListenerOff=-1;
+        for (int i=0; i<=3; i++) //loop four times
+        {
+            rand = new Random().nextInt(questionPool.size());
+            questionsUsed.add(questionPool.get(rand)); //add random q into qlist;
+            questionPool.remove(rand); //remove that q from questionPool
+        }
+        correctAnswer = new Random().nextInt(4);
+    }
+    public void displayImages()
+    {
+        //set the 4 buttons to the 4 qs
+        btns.get(0).setBackground(getResources().getDrawable((int) questionsUsed.get(0).get(0), null));
+        btns.get(1).setBackground(getResources().getDrawable((int) questionsUsed.get(1).get(0), null));
+        btns.get(2).setBackground(getResources().getDrawable((int) questionsUsed.get(2).get(0), null));
+        btns.get(3).setBackground(getResources().getDrawable((int) questionsUsed.get(3).get(0), null));
+
+        //choose a correct answer, then get that image's string and set it as the question
+        question.setText((int) questionsUsed.get(correctAnswer).get(1));
+
+        //set the correct answer's onClickListener
+        btns.get(correctAnswer).setOnClickListener( new View.OnClickListener() {
+            public void onClick(View v) {
+                correct(v);
+            }
+        });
+    }
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        outState.putInt("questionCounter" , questionCounter);
+        outState.putInt("correctCounter" , correctCounter );
+        outState.putInt("incorrectCounter" , incorrectCounter );
+        if (questionsUsed.size()!=0) {
+            outState.putInt("q1", (int) questionsUsed.get(0).get(2));
+            outState.putInt("q2", (int) questionsUsed.get(1).get(2));
+            outState.putInt("q3", (int) questionsUsed.get(2).get(2));
+            outState.putInt("q4", (int) questionsUsed.get(3).get(2));
+        }
+        outState.putInt("qcorrect", correctAnswer);
+        outState.putBoolean("firstIncorrect", firstIncorrect);
+        outState.putInt("falseAnswerSignal1", falseAnswerSignal);
+        outState.putBoolean("btnNextVisibility", btnNext.getVisibility()==View.VISIBLE);
+        outState.putInt("btnListenerOff", btnListenerOff);
+    }
+
+    public void correct(View v)
+    {
+        questionsUsed.remove(correctAnswer); // remove this question forever
+
+        //move the other answers back into usable pool
+        questionPool.add(questionsUsed.get(0));
+        questionPool.add(questionsUsed.get(1));
+        questionPool.add(questionsUsed.get(2));
+        questionsUsed.remove(0);
+        questionsUsed.remove(0);
+        questionsUsed.remove(0);
+
+        correctCounter++;
+        questionCounter++;
+        setAllBtnListenerOff();
+        ((ImageButton) v).setImageResource(R.drawable.correct);//mark img as correct
+
+        btnNext.setVisibility(View.VISIBLE);
+        updateCounters();
+    }
+
+    public void incorrect(View v)
+    {
+        ((ImageButton) v).setImageResource(R.drawable.incorrect);// mark img as incorrect
+
+        ((ImageButton) v).setOnClickListener(new View.OnClickListener() { //turn off click listener
+            public void onClick(View v) {  }
+        });
+        btnListenerOff=(int)v.getTag();
+        incorrectCounter++;
+
+        if (firstIncorrect) // if this is the first incorrect
+        {
+            firstIncorrect = false;
+            falseAnswerSignal = (int) v.getTag();
+        }
+        else // if this is second incorrect
+        {
+            setAllBtnListenerOff();
+            btnNext.setVisibility(View.VISIBLE);
+            questionCounter++;
+            //put all qs back into pool
+            questionPool.add(questionsUsed.get(0));
+            questionPool.add(questionsUsed.get(1));
+            questionPool.add(questionsUsed.get(2));
+            questionPool.add(questionsUsed.get(3));
+            questionsUsed.remove(0);
+            questionsUsed.remove(0);
+            questionsUsed.remove(0);
+            questionsUsed.remove(0);
+        }
+        updateCounters();
+
+        Log.d("MYTYPE" ,  "questionsUsed size: " + questionsUsed.size());
+        Log.d("MYTYPE" ,  "questionPool size: " + questionPool.size());
+    }
+
+    public void updateCounters()
+    {
+        scoreText.setText(getString(R.string.scoreText1) + correctCounter + getString(R.string.scoreText2) +incorrectCounter + getString(R.string.scoreText3));
+        questionCounterText.setText(getString(R.string.counterText1) + questionCounter + getString(R.string.counterText2));
+        /*if (questionCounter == 10)
+        {
+            startActivityForResult(new Intent(this, ResultActivity.class), 9);
+        }*/
+    }
     public void aboutGameInfo(View v)
     {
         //startActivity(new Intent(this, AboutActivity.class));
@@ -290,41 +320,10 @@ public class MainActivity extends AppCompatActivity {
     {
         startActivity(new Intent(this, SearchActivity.class));
     }
-/*
-    @Override
-    protected void onSaveInstanceState(Bundle outState){
-        super.onSaveInstanceState(outState);
 
-        outState.putInt("questionCounter" , questionCounter);
-        outState.putInt("correctCounter" , correctCounter );
-        outState.putInt("incorrectCounter" , incorrectCounter );
-        outState.putInt("questionCounter" , questionCounter );
-        outState.putInt("correctCounter" , correctCounter );
-        outState.putInt("incorrectCounter" , incorrectCounter );
 
-        //outState.putString("question", question.toString());
-        outState.putInt("pic1", (int)imgs.get(0).get(0) );
-        outState.putInt("pic1q", (int)imgs.get(0).get(1) );
-        outState.putInt("pic2", (int)imgs.get(1).get(0) );
-        outState.putInt("pic2q", (int)imgs.get(1).get(1) );
-        outState.putInt("pic3", (int)imgs.get(2).get(0) );
-        outState.putInt("pic3q", (int)imgs.get(2).get(1) );
-        outState.putInt("pic4", (int)imgs.get(3).get(0) );
-        outState.putInt("pic4q", (int)imgs.get(3).get(1) );
-        outState.putInt("correctAnswer", correctAnswer);
-        outState.putBoolean("paused", true);
-       // outState.putInt("incorrectId1", incorrectId1);
-       // outState.putInt("incorrectId2", incorrectId2);
-    }
 
-    public void onPause(){
-        super.onPause();
 
-        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
 
-        editor.putInt("score", correctCounter);
 
-        editor.commit();
-    }*/
 }
